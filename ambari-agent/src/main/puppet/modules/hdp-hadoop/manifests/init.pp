@@ -408,7 +408,8 @@ define hdp-hadoop::exec-hadoop(
   $try_sleep = undef,
   $user = undef,
   $logoutput = undef,
-  $onlyif = undef
+  $onlyif = undef,
+  $path = undef
 )
 {
   include hdp-hadoop::params
