@@ -104,26 +104,6 @@ App.MainServiceInfoConfigsController = Em.Controller.extend({
    */
   savedSiteNameToServerServiceConfigDataMap: {},
   
-
-  /**
-   * XML characters which should be escaped in values
-   * http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references#Predefined_entities_in_XML
-   */
-  xmlEscapeMap: {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': '&quot;',
-    "'": '&apos;'
-  },
-  xmlUnEscapeMap: {
-    "&amp;": "&",
-    "&lt;": "<",
-    "&gt;": ">",
-    "&quot;": '"',
-    "&apos;": "'"
-  },
-  
   isSubmitDisabled: function () {
     return (!(this.stepConfigs.everyProperty('errorCount', 0)) || this.get('isApplyingChanges'));
   }.property('stepConfigs.@each.errorCount', 'isApplyingChanges'),
@@ -1374,7 +1354,7 @@ App.MainServiceInfoConfigsController = Em.Controller.extend({
         if (/_heapsize|_newsize|_maxnewsize$/.test(_globalSiteObj.name) && !heapsizeException.contains(_globalSiteObj.name)) {
           _globalSiteObj.value += "m";
         }
-        globalSiteProperties[_globalSiteObj.name] = this.escapeXMLCharacters(_globalSiteObj.value);
+        globalSiteProperties[_globalSiteObj.name] = App.config.escapeXMLCharacters(_globalSiteObj.value);
         this.recordHostOverride(_globalSiteObj, 'global', tagName, this);
         //console.log("TRACE: name of the global property is: " + _globalSiteObj.name);
         //console.log("TRACE: value of the global property is: " + _globalSiteObj.value);
@@ -1448,7 +1428,7 @@ App.MainServiceInfoConfigsController = Em.Controller.extend({
     var coreSiteObj = this.get('uiConfigs').filterProperty('filename', 'core-site.xml');
     var coreSiteProperties = {};
     coreSiteObj.forEach(function (_coreSiteObj) {
-      coreSiteProperties[_coreSiteObj.name] = this.escapeXMLCharacters(_coreSiteObj.value);
+      coreSiteProperties[_coreSiteObj.name] = App.config.escapeXMLCharacters(_coreSiteObj.value);
       this.recordHostOverride(_coreSiteObj, 'core-site', tagName, this);
     }, this);
     return {"type": "core-site", "tag": tagName, "properties": coreSiteProperties};
@@ -1469,32 +1449,12 @@ App.MainServiceInfoConfigsController = Em.Controller.extend({
       siteObj = this.getHiveSiteObj(siteObj);
     }
     siteObj.forEach(function (_siteObj) {
-      siteProperties[_siteObj.name] = this.escapeXMLCharacters(_siteObj.value);
+      siteProperties[_siteObj.name] = App.config.escapeXMLCharacters(_siteObj.value);
       this.recordHostOverride(_siteObj, siteName, tagName, this);
     }, this);
     return {"type": siteName, "tag": tagName, "properties": siteProperties};
   },
   
-  /**
-   * Since values end up in XML files (core-sit.xml, etc.), certain
-   * XML sensitive characters should be escaped. If not we will have
-   * an invalid XML document, and services will fail to start. 
-   * 
-   * Special characters in XML are defined at
-   * http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references#Predefined_entities_in_XML
-   */
-  escapeXMLCharacters: function(value) {
-    var self = this;
-    // To prevent double/triple replacing '&gt;' to '&gt;gt;' to '&gt;gt;gt', we need
-    // to first unescape all XML chars, and then escape them again.
-    var newValue = String(value).replace(/(&amp;|&lt;|&gt;|&quot;|&apos;)/g, function (s) {
-      return self.xmlUnEscapeMap[s];
-    });
-    return String(newValue).replace(/[&<>"']/g, function (s) {
-      return self.xmlEscapeMap[s];
-    });
-  },
-
   /**
    * create site object for Oozie
    * @param siteObj

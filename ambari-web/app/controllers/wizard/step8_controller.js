@@ -1379,7 +1379,7 @@ App.WizardStep8Controller = Em.Controller.extend({
         if (/_heapsize|_newsize|_maxnewsize$/.test(_globalSiteObj.name) && !heapsizeException.contains(_globalSiteObj.name)) {
           globalSiteProperties[_globalSiteObj.name] = _globalSiteObj.value + "m";
         } else {
-          globalSiteProperties[_globalSiteObj.name] = _globalSiteObj.value;
+          globalSiteProperties[_globalSiteObj.name] = App.config.escapeXMLCharacters(_globalSiteObj.value);
         }
         console.log("STEP8: name of the global property is: " + _globalSiteObj.name);
         console.log("STEP8: value of the global property is: " + _globalSiteObj.value);
@@ -1414,11 +1414,11 @@ App.WizardStep8Controller = Em.Controller.extend({
     }
     coreSiteObj.forEach(function (_coreSiteObj) {
       if ((isOozieSelected || (_coreSiteObj.name != 'hadoop.proxyuser.' + oozieUser + '.hosts' && _coreSiteObj.name != 'hadoop.proxyuser.' + oozieUser + '.groups')) && (isHiveSelected || (_coreSiteObj.name != 'hadoop.proxyuser.' + hiveUser + '.hosts' && _coreSiteObj.name != 'hadoop.proxyuser.' + hiveUser + '.groups')) && (isHcatSelected || (_coreSiteObj.name != 'hadoop.proxyuser.' + hcatUser + '.hosts' && _coreSiteObj.name != 'hadoop.proxyuser.' + hcatUser + '.groups'))) {
-        coreSiteProperties[_coreSiteObj.name] = _coreSiteObj.value;
+        coreSiteProperties[_coreSiteObj.name] = App.config.escapeXMLCharacters(_coreSiteObj.value);
         this._recordHostOverrideFromObj(_coreSiteObj, 'core-site', 'version1', this);
       }
       if (isHCFSSelected && _coreSiteObj.name == "fs.default.name") {
-        coreSiteProperties[_coreSiteObj.name] = this.get('globals').someProperty('name', 'fs_glusterfs_default_name') ? this.get('globals').findProperty('name', 'fs_glusterfs_default_name').value : null;
+        coreSiteProperties[_coreSiteObj.name] = this.get('globals').someProperty('name', 'fs_glusterfs_default_name') ? App.config.escapeXMLCharacters(this.get('globals').findProperty('name', 'fs_glusterfs_default_name').value) : null;
       }
       console.log("STEP*: name of the property is: " + _coreSiteObj.name);
       console.log("STEP8: value of the property is: " + _coreSiteObj.value);
@@ -1430,7 +1430,7 @@ App.WizardStep8Controller = Em.Controller.extend({
     var hdfsSiteObj = this.get('configs').filterProperty('filename', 'hdfs-site.xml');
     var hdfsProperties = {};
     hdfsSiteObj.forEach(function (_configProperty) {
-      hdfsProperties[_configProperty.name] = _configProperty.value;
+      hdfsProperties[_configProperty.name] = App.config.escapeXMLCharacters(_configProperty.value);
       this._recordHostOverrideFromObj(_configProperty, 'hdfs-site', 'version1', this);
       console.log("STEP*: name of the property is: " + _configProperty.name);
       console.log("STEP8: value of the property is: " + _configProperty.value);
@@ -1442,7 +1442,7 @@ App.WizardStep8Controller = Em.Controller.extend({
     var hueSiteObj = this.get('configs').filterProperty('filename', 'hue-site.xml');
     var hueProperties = {};
     hueSiteObj.forEach(function (_configProperty) {
-      hueProperties[_configProperty.name] = _configProperty.value;
+      hueProperties[_configProperty.name] = App.config.escapeXMLCharacters(_configProperty.value);
       this._recordHostOverrideFromObj(_configProperty, 'hue-site', 'version1', this);
       console.log("STEP*: name of the property is: " + _configProperty.name);
       console.log("STEP8: value of the property is: " + _configProperty.value);
@@ -1454,7 +1454,7 @@ App.WizardStep8Controller = Em.Controller.extend({
     var configs = this.get('configs').filterProperty('filename', 'mapred-site.xml');
     var mrProperties = {};
     configs.forEach(function (_configProperty) {
-      mrProperties[_configProperty.name] = _configProperty.value;
+      mrProperties[_configProperty.name] = App.config.escapeXMLCharacters(_configProperty.value);
       this._recordHostOverrideFromObj(_configProperty, 'mapred-site', 'version1', this);
       console.log("STEP*: name of the property is: " + _configProperty.name);
       console.log("STEP8: value of the property is: " + _configProperty.value);
@@ -1466,7 +1466,7 @@ App.WizardStep8Controller = Em.Controller.extend({
     var configs = this.get('configs').filterProperty('filename', 'yarn-site.xml');
     var mrProperties = {};
     configs.forEach(function (_configProperty) {
-      mrProperties[_configProperty.name] = _configProperty.value;
+      mrProperties[_configProperty.name] = App.config.escapeXMLCharacters(_configProperty.value);
       this._recordHostOverrideFromObj(_configProperty, 'yarn-site', 'version1', this);
       console.log("STEP*: name of the property is: " + _configProperty.name);
       console.log("STEP8: value of the property is: " + _configProperty.value);
@@ -1478,7 +1478,7 @@ App.WizardStep8Controller = Em.Controller.extend({
     var configs = this.get('configs').filterProperty('filename', 'capacity-scheduler.xml');
     var csProperties = {};
     configs.forEach(function (_configProperty) {
-      csProperties[_configProperty.name] = _configProperty.value;
+      csProperties[_configProperty.name] = App.config.escapeXMLCharacters(_configProperty.value);
       this._recordHostOverrideFromObj(_configProperty, 'capacity-scheduler', 'version1', this);
       console.log("STEP*: name of the property is: " + _configProperty.name);
       console.log("STEP8: value of the property is: " + _configProperty.value);
@@ -1490,7 +1490,7 @@ App.WizardStep8Controller = Em.Controller.extend({
     var configs = this.get('configs').filterProperty('filename', 'mapred-queue-acls.xml');
     var mqProperties = {};
     configs.forEach(function (_configProperty) {
-     mqProperties[_configProperty.name] = _configProperty.value;
+     mqProperties[_configProperty.name] = App.config.escapeXMLCharacters(_configProperty.value);
      this._recordHostOverrideFromObj(_configProperty, 'mapred-queue-acls', 'version1', this);
       console.log("STEP*: name of the property is: " + _configProperty.name);
       console.log("STEP8: value of the property is: " + _configProperty.value);
@@ -1502,7 +1502,7 @@ App.WizardStep8Controller = Em.Controller.extend({
     var configs = this.get('configs').filterProperty('filename', 'hbase-site.xml');
     var hbaseProperties = {};
     configs.forEach(function (_configProperty) {
-      hbaseProperties[_configProperty.name] = _configProperty.value;
+      hbaseProperties[_configProperty.name] = App.config.escapeXMLCharacters(_configProperty.value);
       this._recordHostOverrideFromObj(_configProperty, 'hbase-site', 'version1', this);
     }, this);
     return {type: 'hbase-site', tag: 'version1', properties: hbaseProperties};
@@ -1512,7 +1512,7 @@ App.WizardStep8Controller = Em.Controller.extend({
     var configs = this.get('configs').filterProperty('filename', 'oozie-site.xml');
     var oozieProperties = {};
     configs.forEach(function (_configProperty) {
-      oozieProperties[_configProperty.name] = _configProperty.value;
+      oozieProperties[_configProperty.name] = App.config.escapeXMLCharacters(_configProperty.value);
       this._recordHostOverrideFromObj(_configProperty, 'oozie-site', 'version1', this);
     }, this);
     var globals = this.get('content.serviceConfigProperties').filterProperty('id', 'puppet var');
@@ -1541,7 +1541,7 @@ App.WizardStep8Controller = Em.Controller.extend({
     var configs = this.get('configs').filterProperty('filename', 'hive-site.xml');
     var hiveProperties = {};
     configs.forEach(function (_configProperty) {
-      hiveProperties[_configProperty.name] = _configProperty.value;
+      hiveProperties[_configProperty.name] = App.config.escapeXMLCharacters(_configProperty.value);
       this._recordHostOverrideFromObj(_configProperty, 'hive-site', 'version1', this);
     }, this);
     var globals = this.get('content.serviceConfigProperties').filterProperty('id', 'puppet var');
@@ -1567,7 +1567,7 @@ App.WizardStep8Controller = Em.Controller.extend({
     var configs = this.get('configs').filterProperty('filename', 'webhcat-site.xml');
     var webHCatProperties = {};
     configs.forEach(function (_configProperty) {
-      webHCatProperties[_configProperty.name] = _configProperty.value;
+      webHCatProperties[_configProperty.name] = App.config.escapeXMLCharacters(_configProperty.value);
       this._recordHostOverrideFromObj(_configProperty, 'webhcat-site', 'version1', this);
     }, this);
     return {type: 'webhcat-site', tag: 'version1', properties: webHCatProperties};
